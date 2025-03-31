@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesse Cosmétiques - Gestion des commandes</title>
+    <style>
+        :root {
+            --primary: #d4a5c9;
+            --secondary: #f0e6ef;
+            --dark: #3d314a;
+            --light: #f8f4f8;
+            --success: #7ae582;
+            --warning: #ffd166;
+            --danger: #ef476f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--dark);
+            padding: 0.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: var(--primary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #c78dbd;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background-color: #d63a5f;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background-color: var(--success);
+            color: #1a3a1e;
+        }
+        
+        .alert-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--secondary);
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .status-pending {
+            color: var(--warning);
+            font-weight: 500;
+        }
+        
+        .status-shipped {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .status-delivered {
+            color: var(--success);
+            font-weight: 500;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                margin: 0.25rem 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hesse Cosmétiques</h1>
+        <p>Votre beauté, notre passion</p>
+    </header>
+    
+    <nav>
+        <a href="#" onclick="showSection('home')">Accueil</a>
+        <a href="#" onclick="showSection('order')">Passer commande</a>
+        <a href="#" onclick="showSection('track')">Suivi de commande</a>
+        <a href="#" onclick="showSection('admin-login')">Espace Admin</a>
+    </nav>
+    
+    <div class="container">
+        <!-- Section Accueil -->
+        <section id="home-section" class="section">
+            <h2>Bienvenue chez Hesse Cosmétiques</h2>
+            <p>Découvrez nos produits de beauté naturels et de haute qualité.</p>
+            <p>Pour passer commande, cliquez sur "Passer commande" dans le menu.</p>
+            
+            <h3>Nos produits phares</h3>
+            <div id="featured-products">
+                <!-- Produits chargés dynamiquement -->
+            </div>
+        </section>
+        
+        <!-- Section Commande -->
+        <section id="order-section" class="section hidden">
+            <h2>Passer une commande</h2>
+            <form id="order-form">
+                <div class="form-group">
+                    <label for="customer-name">Nom complet</label>
+                    <input type="text" id="customer-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer-email">Email</label>
+                    <input type="email" id="customer-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer-phone">Téléphone</label>
+                    <input type="tel" id="customer-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer-address">Adresse</label>
+                    <textarea id="customer-address" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product">Produit</label>
+                    <select id="product" required>
+                        <option value="">Sélectionnez un produit</option>
+                        <!-- Options chargées dynamiquement -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantity">Quantité</label>
+                    <input type="number" id="quantity" min="1" value="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shipping">Option de livraison</label>
+                    <select id="shipping" required>
+                        <option value="standard">Livraison standard (3-5 jours)</option>
+                        <option value="express">Livraison express (1-2 jours)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Notes supplémentaires</label>
+                    <textarea id="notes" rows="2"></textarea>
+                </div>
+                
+                <button type="submit">Passer commande</button>
+            </form>
+            
+            <div id="order-success" class="alert alert-success hidden">
+                Votre commande a été passée avec succès! Votre numéro de commande est: <strong id="order-number"></strong>
+            </div>
+        </section>
+        
+        <!-- Section Suivi de commande -->
+        <section id="track-section" class="section hidden">
+            <h2>Suivi de commande</h2>
+            <form id="track-form">
+                <div class="form-group">
+                    <label for="track-order-number">Numéro de commande</label>
+                    <input type="text" id="track-order-number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="track-email">Email</label>
+                    <input type="email" id="track-email" required>
+                </div>
+                
+                <button type="submit">Rechercher</button>
+            </form>
+            
+            <div id="track-result" class="hidden">
+                <h3>Détails de la commande</h3>
+                <div id="order-details"></div>
+            </div>
+        </section>
+        
+        <!-- Section Admin Login -->
+        <section id="admin-login-section" class="section hidden">
+            <h2>Connexion Admin</h2>
+            <form id="admin-login-form" class="login-form">
+                <div class="form-group">
+                    <label for="admin-username">Nom d'utilisateur</label>
+                    <input type="text" id="admin-username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-password">Mot de passe</label>
+                    <input type="password" id="admin-password" required>
+                </div>
+                
+                <button type="submit">Se connecter</button>
+            </form>
+        </section>
+        
+        <!-- Section Admin Dashboard -->
+        <section id="admin-dashboard-section" class="section hidden">
+            <h2>Tableau de bord Admin</h2>
+            
+            <div class="admin-actions">
+                <button onclick="loadOrders()">Actualiser les commandes</button>
+                <button onclick="showAddProductForm()">Ajouter un produit</button>
+                <button class="btn-danger" onclick="logoutAdmin()">Déconnexion</button>
+            </div>
+            
+            <h3>Statistiques</h3>
+            <div id="stats">
+                <p>Commandes aujourd'hui: <span id="today-orders">0</span></p>
+                <p>Commandes ce mois: <span id="month-orders">0</span></p>
+                <p>Produits en stock: <span id="total-products">0</span></p>
+            </div>
+            
+            <h3>Commandes récentes</h3>
+            <div class="filters">
+                <select id="status-filter">
+                    <option value="all">Tous les statuts</option>
+                    <option value="pending">En attente</option>
+                    <option value="shipped">Expédié</option>
+                    <option value="delivered">Livré</option>
+                </select>
+                <button onclick="filterOrders()">Filtrer</button>
+            </div>
+            
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>N° Commande</th>
+                        <th>Client</th>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-list">
+                    <!-- Commandes chargées dynamiquement -->
+                </tbody>
+            </table>
+            
+            <div id="add-product-form" class="hidden">
+                <h3>Ajouter un nouveau produit</h3>
+                <form id="product-form">
+                    <div class="form-group">
+                        <label for="product-name">Nom du produit</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-price">Prix (€)</label>
+                        <input type="number" id="product-price" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-stock">Stock disponible</label>
+                        <input type="number" id="product-stock" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-description">Description</label>
+                        <textarea id="product-description" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit">Enregistrer</button>
+                    <button type="button" class="btn-danger" onclick="hideAddProductForm()">Annuler</button>
+                </form>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Données initiales
+        const initialProducts = [
+            { id: 1, name: "Crème hydratante", price: 24.99, stock: 50, description: "Crème hydratante 24h pour peau sensible" },
+            { id: 2, name: "Sérum anti-âge", price: 39.99, stock: 30, description: "Sérum intense pour rides et ridules" },
+            { id: 3, name: "Masque purifiant", price: 19.99, stock: 40, description: "Masque argile pour peau impure" }
+        ];
+        
+        const adminCredentials = {
+            username: "hesseadmin",
+            password: "Hesse2024!"
+        };
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser les données si elles n'existent pas
+            if (!localStorage.getItem('hesse-products')) {
+                localStorage.setItem('hesse-products', JSON.stringify(initialProducts));
+            }
+            
+            if (!localStorage.getItem('hesse-orders')) {
+                localStorage.setItem('hesse-orders', JSON.stringify([]));
+            }
+            
+            // Charger les produits dans le formulaire de commande
+            loadProducts();
+            loadFeaturedProducts();
+            
+            // Afficher la section d'accueil par défaut
+            showSection('home');
+            
+            // Écouteurs d'événements
+            document.getElementById('order-form').addEventListener('submit', placeOrder);
+            document.getElementById('track-form').addEventListener('submit', trackOrder);
+            document.getElementById('admin-login-form').addEventListener('submit', loginAdmin);
+            document.getElementById('product-form').addEventListener('submit', addProduct);
+        });
+        
+        // Fonctions d'affichage
+        function showSection(sectionId) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Afficher la section demandée
+            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
+        }
+        
+        // Fonctions produits
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('hesse-products'));
+            const productSelect = document.getElementById('product');
+            
+            // Vider les options existantes
+            productSelect.innerHTML = '<option value="">Sélectionnez un produit</option>';
+            
+            // Ajouter chaque produit comme option
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = `${product.name} - €${product.price.toFixed(2)}`;
+                productSelect.appendChild(option);
+            });
+        }
+        
+        function loadFeaturedProducts() {
+            const products = JSON.parse(localStorage.getItem('hesse-products'));
+            const featuredContainer = document.getElementById('featured-products');
+            
+            featuredContainer.innerHTML = '';
+            
+            // Afficher les 3 premiers produits comme produits phares
+            products.slice(0, 3).forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <h4>${product.name}</h4>
+                    <p>${product.description}</p>
+                    <p><strong>€${product.price.toFixed(2)}</strong></p>
+                `;
+                featuredContainer.appendChild(productDiv);
+            });
+        }
+        
+        // Fonctions commandes
+        function placeOrder(e) {
+            e.preventDefault();
+            
+            // Récupérer les valeurs du formulaire
+            const name = document.getElementById('customer-name').value;
+            const email = document.getElementById('customer-email').value;
+            const phone = document.getElementById('customer-phone').value;
+            const address = document.getElementById('customer-address').value;
+            const productId = parseInt(document.getElementById('product').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const shipping = document.getElementById('shipping').value;
+            const notes = document.getElementById('notes').value;
+            
+            // Récupérer les produits
+            const products = JSON.parse(localStorage.getItem('hesse-products'));
+            const selectedProduct = products.find(p => p.id === productId);
+            
+            if (!selectedProduct) {
+                alert('Produit non trouvé');
+                return;
+            }
+            
+            // Vérifier le stock
+            if (selectedProduct.stock < quantity) {
+                alert(`Désolé, il ne reste que ${selectedProduct.stock} unité(s) de ce produit en stock.`);
+                return;
+            }
+            
+            // Créer la commande
+            const order = {
+                id: generateOrderId(),
+                customer: { name, email, phone, address },
+                product: {
+                    id: selectedProduct.id,
+                    name: selectedProduct.name,
+                    price: selectedProduct.price,
+                    quantity: quantity
+                },
+                shipping,
+                notes,
+                status: 'pending',
+                date: new Date().toISOString()
+            };
+            
+            // Mettre à jour le stock
+            selectedProduct.stock -= quantity;
+            localStorage.setItem('hesse-products', JSON.stringify(products));
+            
+            // Sauvegarder la commande
+            const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+            orders.push(order);
+            localStorage.setItem('hesse-orders', JSON.stringify(orders));
+            
+            // Afficher le message de succès
+            document.getElementById('order-number').textContent = order.id;
+            document.getElementById('order-success').classList.remove('hidden');
+            
+            // Réinitialiser le formulaire
+            document.getElementById('order-form').reset();
+            
+            // Recharger les produits (stock mis à jour)
+            loadProducts();
+        }
+        
+        function generateOrderId() {
+            return 'HESSE-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+        }
+        
+        function trackOrder(e) {
+            e.preventDefault();
+            
+            const orderNumber = document.getElementById('track-order-number').value;
+            const email = document.getElementById('track-email').value;
+            
+            const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+            const order = orders.find(o => o.id === orderNumber && o.customer.email === email);
+            
+            const resultDiv = document.getElementById('track-result');
+            const detailsDiv = document.getElementById('order-details');
+            
+            if (order) {
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(order.status) {
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = 'En attente';
+                        break;
+                    case 'shipped':
+                        statusClass = 'status-shipped';
+                        statusText = 'Expédié';
+                        break;
+                    case 'delivered':
+                        statusClass = 'status-delivered';
+                        statusText = 'Livré';
+                        break;
+                }
+                
+                detailsDiv.innerHTML = `
+                    <p><strong>Numéro de commande:</strong> ${order.id}</p>
+                    <p><strong>Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
+                    <p><strong>Client:</strong> ${order.customer.name}</p>
+                    <p><strong>Produit:</strong> ${order.product.name} (x${order.product.quantity})</p>
+                    <p><strong>Total:</strong> €${(order.product.price * order.product.quantity).toFixed(2)}</p>
+                    <p><strong>Statut:</strong> <span class="${statusClass}">${statusText}</span></p>
+                    <p><strong>Adresse de livraison:</strong> ${order.customer.address}</p>
+                    ${order.notes ? `<p><strong>Notes:</strong> ${order.notes}</p>` : ''}
+                `;
+                
+                resultDiv.classList.remove('hidden');
+            } else {
+                detailsDiv.innerHTML = '<p class="alert alert-danger">Commande non trouvée. Vérifiez le numéro de commande et l\'email.</p>';
+                resultDiv.classList.remove('hidden');
+            }
+        }
+        
+        // Fonctions admin
+        function loginAdmin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                // Connexion réussie
+                localStorage.setItem('hesse-admin-loggedin', 'true');
+                showSection('admin-dashboard');
+                loadAdminDashboard();
+            } else {
+                alert('Identifiants incorrects');
+            }
+        }
+        
+        function logoutAdmin() {
+            localStorage.removeItem('hesse-admin-loggedin');
+            showSection('admin-login');
+            document.getElementById('admin-login-form').reset();
+        }
+        
+        function loadAdminDashboard() {
+            if (localStorage.getItem('hesse-admin-loggedin') !== 'true') {
+                showSection('admin-login');
+                return;
+            }
+            
+            const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+            const products = JSON.parse(localStorage.getItem('hesse-products'));
+            
+            // Statistiques
+            const today = new Date().toISOString().split('T')[0];
+            const todayOrders = orders.filter(o => o.date.split('T')[0] === today).length;
+            
+            const currentMonth = new Date().getMonth();
+            const monthOrders = orders.filter(o => new Date(o.date).getMonth() === currentMonth).length;
+            
+            document.getElementById('today-orders').textContent = todayOrders;
+            document.getElementById('month-orders').textContent = monthOrders;
+            document.getElementById('total-products').textContent = products.length;
+            
+            // Charger les commandes
+            loadOrders();
+        }
+        
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+            const ordersList = document.getElementById('orders-list');
+            
+            ordersList.innerHTML = '';
+            
+            // Trier par date (plus récent en premier)
+            const sortedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedOrders.forEach(order => {
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(order.status) {
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = 'En attente';
+                        break;
+                    case 'shipped':
+                        statusClass = 'status-shipped';
+                        statusText = 'Expédié';
+                        break;
+                    case 'delivered':
+                        statusClass = 'status-delivered';
+                        statusText = 'Livré';
+                        break;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer.name}</td>
+                    <td>${order.product.name}</td>
+                    <td>${order.product.quantity}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td>
+                        <select onchange="updateOrderStatus('${order.id}', this.value)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>En attente</option>
+                            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Expédié</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Livré</option>
+                        </select>
+                        <button onclick="deleteOrder('${order.id}')" class="btn-danger">Supprimer</button>
+                    </td>
+                `;
+                ordersList.appendChild(row);
+            });
+        }
+        
+        function filterOrders() {
+            const status = document.getElementById('status-filter').value;
+            const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+            const ordersList = document.getElementById('orders-list');
+            
+            ordersList.innerHTML = '';
+            
+            let filteredOrders = [...orders];
+            
+            if (status !== 'all') {
+                filteredOrders = orders.filter(o => o.status === status);
+            }
+            
+            // Trier par date (plus récent en premier)
+            filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            filteredOrders.forEach(order => {
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(order.status) {
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = 'En attente';
+                        break;
+                    case 'shipped':
+                        statusClass = 'status-shipped';
+                        statusText = 'Expédié';
+                        break;
+                    case 'delivered':
+                        statusClass = 'status-delivered';
+                        statusText = 'Livré';
+                        break;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer.name}</td>
+                    <td>${order.product.name}</td>
+                    <td>${order.product.quantity}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td>
+                        <select onchange="updateOrderStatus('${order.id}', this.value)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>En attente</option>
+                            <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Expédié</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Livré</option>
+                        </select>
+                        <button onclick="deleteOrder('${order.id}')" class="btn-danger">Supprimer</button>
+                    </td>
+                `;
+                ordersList.appendChild(row);
+            });
+        }
+        
+        function updateOrderStatus(orderId, newStatus) {
+            const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+                localStorage.setItem('hesse-orders', JSON.stringify(orders));
+                loadOrders();
+            }
+        }
+        
+        function deleteOrder(orderId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette commande?')) {
+                const orders = JSON.parse(localStorage.getItem('hesse-orders'));
+                const updatedOrders = orders.filter(o => o.id !== orderId);
+                localStorage.setItem('hesse-orders', JSON.stringify(updatedOrders));
+                loadOrders();
+            }
+        }
+        
+        function showAddProductForm() {
+            document.getElementById('add-product-form').classList.remove('hidden');
+        }
+        
+        function hideAddProductForm() {
+            document.getElementById('add-product-form').classList.add('hidden');
+            document.getElementById('product-form').reset();
+        }
+        
+        function addProduct(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('product-name').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            const stock = parseInt(document.getElementById('product-stock').value);
+            const description = document.getElementById('product-description').value;
+            
+            const products = JSON.parse(localStorage.getItem('hesse-products'));
+            
+            // Générer un nouvel ID
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            
+            const newProduct = {
+                id: newId,
+                name,
+                price,
+                stock,
+                description
+            };
+            
+            products.push(newProduct);
+            localStorage.setItem('hesse-products', JSON.stringify(products));
+            
+            // Mettre à jour les listes de produits
+            loadProducts();
+            loadFeaturedProducts();
+            
+            // Cacher et réinitialiser le formulaire
+            hideAddProductForm();
+            
+            // Recharger le tableau de bord
+            loadAdminDashboard();
+        }
+    </script>
+</body>
+</html>
