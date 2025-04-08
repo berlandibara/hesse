@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hesse Cosmétiques - Gestion des commandes</title>
+    <title>Hesse Cosmétique - Gestion des commandes</title>
     <style>
         :root {
             --primary: #d4a5c9;
@@ -192,11 +192,14 @@
 </head>
 <body>
     <header>
-        <h1>Hesse Cosmétiques</h1>
-        <p>Votre beauté, notre passion</p>
+        <h1>Hesse Cosmétique</h1>
+        <p>La beauté au  naturel</p>
     </header>
     
     <nav>
+        <div class="logo">
+            <img src="asset/logo.jpg" alt="Logo" height="50px">
+          </div>
         <a href="#" onclick="showSection('home')">Accueil</a>
         <a href="#" onclick="showSection('order')">Passer commande</a>
         <a href="#" onclick="showSection('track')">Suivi de commande</a>
@@ -206,7 +209,7 @@
     <div class="container">
         <!-- Section Accueil -->
         <section id="home-section" class="section">
-            <h2>Bienvenue chez Hesse Cosmétiques</h2>
+            <h2>Bienvenue chez Hesse Cosmétique</h2>
             <p>Découvrez nos produits de beauté naturels et de haute qualité.</p>
             <p>Pour passer commande, cliquez sur "Passer commande" dans le menu.</p>
             
@@ -214,6 +217,7 @@
             <div id="featured-products">
                 <!-- Produits chargés dynamiquement -->
             </div>
+            
         </section>
         
         <!-- Section Commande -->
@@ -227,7 +231,7 @@
                 
                 <div class="form-group">
                     <label for="customer-email">Email</label>
-                    <input type="email" id="customer-email" required>
+                    <input type="email" id="customer-email">
                 </div>
                 
                 <div class="form-group">
@@ -285,7 +289,7 @@
                 
                 <div class="form-group">
                     <label for="track-email">Email</label>
-                    <input type="email" id="track-email" required>
+                    <input type="email" id="track-email" >
                 </div>
                 
                 <button type="submit">Rechercher</button>
@@ -369,7 +373,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="product-price">Prix (€)</label>
+                        <label for="product-price">Prix (FCFA)</label>
                         <input type="number" id="product-price" step="0.01" required>
                     </div>
                     
@@ -393,13 +397,11 @@
     <script>
         // Données initiales
         const initialProducts = [
-            { id: 1, name: "Crème hydratante", price: 24.99, stock: 50, description: "Crème hydratante 24h pour peau sensible" },
-            { id: 2, name: "Sérum anti-âge", price: 39.99, stock: 30, description: "Sérum intense pour rides et ridules" },
-            { id: 3, name: "Masque purifiant", price: 19.99, stock: 40, description: "Masque argile pour peau impure" }
+            { id: 1, name: "Kit ventre plat", price: 6000, stock: 50, description: "Crème mincissant et le Patch" }
         ];
         
         const adminCredentials = {
-            username: "hesseadmin",
+            username: "Hesseadmin",
             password: "Hesse2024!"
         };
         
@@ -451,7 +453,7 @@
             products.forEach(product => {
                 const option = document.createElement('option');
                 option.value = product.id;
-                option.textContent = `${product.name} - €${product.price.toFixed(2)}`;
+                option.textContent = `${product.name} - ${product.price.toFixed(2)}F`;
                 productSelect.appendChild(option);
             });
         }
@@ -469,7 +471,7 @@
                 productDiv.innerHTML = `
                     <h4>${product.name}</h4>
                     <p>${product.description}</p>
-                    <p><strong>€${product.price.toFixed(2)}</strong></p>
+                    <p><strong>${product.price.toFixed(2)}F</strong></p>
                 `;
                 featuredContainer.appendChild(productDiv);
             });
@@ -580,7 +582,7 @@
                     <p><strong>Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
                     <p><strong>Client:</strong> ${order.customer.name}</p>
                     <p><strong>Produit:</strong> ${order.product.name} (x${order.product.quantity})</p>
-                    <p><strong>Total:</strong> €${(order.product.price * order.product.quantity).toFixed(2)}</p>
+                    <p><strong>Total:</strong> ${(order.product.price * order.product.quantity).toFixed(2)}F</p>
                     <p><strong>Statut:</strong> <span class="${statusClass}">${statusText}</span></p>
                     <p><strong>Adresse de livraison:</strong> ${order.customer.address}</p>
                     ${order.notes ? `<p><strong>Notes:</strong> ${order.notes}</p>` : ''}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    /* Design du navbar */
+    .topnav {
+      background-color: #fbe1d4; /* Couleur rose clair */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Espace pour le logo */
+    .topnav .logo {
+      flex-shrink: 0;
+      padding: 0 16px;
+    }
+
+    .topnav .logo img {
+      max-height: 50px;
+    }
+
+    /* Style des liens */
+    .topnav a {
+      flex-grow: 1;
+      display: block;
+      color: #4b3621; /* Couleur ton café */
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    /* Couleur sur hover */
+    .topnav a:hover {
+      background-color: #b5d7b2; /* Couleur verte claire */
+      color: rgb(0, 0, 0);
+    }
+
+    /* Lien actif */
+    .topnav a.active {
+      background-color: #3a7a34; /* Couleur vert foncé */
+      color: white;
+    }
+
+    /* Icône menu pour mobile */
+    .topnav .icon {
+      display: none;
+    }
+
+    /* Responsivité */
+    @media screen and (max-width: 600px) {
+      .topnav a:not(:first-child) {display: none;}
+      .topnav a.icon {
+        display: block;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .topnav.responsive {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .topnav.responsive a {
+        display: block;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav" id="myTopnav">
+    <!-- Ajout de l'espace logo -->
+    <div class="logo">
+      <img src="asset/logo.jpg" alt="Logo">
+    </div>
+    <a href="#home" class="active">Home</a>
+    <a href="#news">News</a>
+    <a href="#contact">Contact</a>
+    <a href="#about">About</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+  <script>
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+  </script>
+</body>
+</html>
